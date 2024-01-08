@@ -41,7 +41,7 @@
           }
         )
 
-        let xplot = linspace(-0.1, 1.1, 100)
+        let xplot = linspace(-0.2, 1.2, 300)
         let yplot = xplot.map(xk => decisionFunction([xk], status, svs, params))
 
         let plot = document.getElementById('plot')
@@ -64,7 +64,7 @@
             }
           ],
           {
-            xaxis: { range: [-0.1, 1.1] },
+            xaxis: { range: [-0.2, 1.2] },
             yaxis: { range: [-1.1, 1.1] },
             showlegend: false,
             margin: { t: 0, b: 0, l: 0, r: 0 }
