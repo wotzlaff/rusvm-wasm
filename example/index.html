@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>rusvm-wasm example</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/seedrandom/2.3.10/seedrandom.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <script src="./data.js"></script>
+    <style>
+      body {
+        text-align: center;
+      }
+      body > div {
+        margin: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="plot" style="width: 600px; height: 400px"></div>
+    <div id="status"></div>
+
+    <script type="module">
+      import init, { smo } from './pkg/rusvm_wasm.js'
+      init().then(() => {
+        let { x, y } = generateData(25, '?')
+
+        let lmbda = 1e-2
+        let gamma = 100.0
+        let params = { lmbda, gamma }
+        let [optStatus, status, svs] = smo(
+          x,
+          y,
+          {
+            kind: 'regression',
+            gamma,
+            lmbda,
+            epsilon: 0.01
+          },
+          {
+            tol: 1e-7
+          }
+        )
+
+        let xplot = linspace(-0.1, 1.1, 100)
+        let yplot = xplot.map(xk => decisionFunction([xk], status, svs, params))
+
+        let plot = document.getElementById('plot')
+        Plotly.newPlot(
+          plot,
+          [
+            {
+              x: x.map(xi => xi[0]),
+              y,
+              mode: 'markers',
+              marker: {
+                symbol: 'cross',
+                size: 10
+              },
+              line: { width: 0.0 }
+            },
+            {
+              x: xplot,
+              y: yplot
+            }
+          ],
+          {
+            xaxis: { range: [-0.1, 1.1] },
+            yaxis: { range: [-1.1, 1.1] },
+            showlegend: false,
+            margin: { t: 0, b: 0, l: 0, r: 0 }
+          },
+          {
+            // staticPlot: true
+            displayModeBar: false
+          }
+        )
+
+        let statusDiv = document.getElementById('status')
+        statusDiv.innerHTML = [
+          `<b>number of iterations:</b> ${optStatus.steps}`,
+          `<b>final violation:</b> ${optStatus.violation}`,
+          `<b>number of support vectors:</b> ${status.a.length}`
+        ].join('<br />')
+      })
+    </script>
+  </body>
+</html>
