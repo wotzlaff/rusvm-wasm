@@ -13,6 +13,7 @@ extern "C" {
     fn log(value: &str);
 }
 
+#[allow(unused_macros)]
 macro_rules! console_log {
     ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
 }
