@@ -13,5 +13,5 @@ wasm-bindgen = "0.2"
 serde = { version = "1.0", features = ["derive"] }
 serde-wasm-bindgen = "0.4"
 js-sys = "0.3"
-rusvm = { path = "../rusvm", default-features = false, features= ["no_time"] }
+rusvm = { path = "../rusvm", default-features = false, features= ["wasm"] }
 console_error_panic_hook = "*"

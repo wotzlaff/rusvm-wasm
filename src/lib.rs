@@ -1,11 +1,9 @@
-#![feature(trait_upcasting)]
-
 use js_sys::{Array, Object, Reflect};
+use rusvm::kernel::cache;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
 extern "C" {
-    pub fn alert(s: &str);
     #[wasm_bindgen(js_namespace = console)]
     fn log(value: &str);
 }
@@ -148,17 +146,11 @@ pub fn smo(
         }
         data.push(arr);
     }
-    let mut base = Box::new(rusvm::kernel::gaussian_from_vecs(
+    let base = Box::new(rusvm::kernel::gaussian_from_vecs(
         data.iter().map(|v| v.as_slice()).collect::<Vec<&[f64]>>(),
         get_nonan(params_problem, "gamma", 1.0),
     ));
-    let mut kernel: Box<dyn rusvm::kernel::Kernel> = {
-        if cache_size > 0 {
-            Box::new(rusvm::kernel::CachedKernel::from(base.as_mut(), cache_size))
-        } else {
-            base
-        }
-    };
+    let mut kernel = cache(base, cache_size);
     let result = rusvm::smo::solve(problem.as_ref(), kernel.as_mut(), &params_smo, None);
     let (result_sv, svs) = result.find_support(&data);
     serde_wasm_bindgen::to_value(&(result.opt_status, result_sv, svs))
