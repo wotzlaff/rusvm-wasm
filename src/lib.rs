@@ -34,12 +34,7 @@ pub fn smo(
     let problem = prepare_problem(&y, params_problem).unwrap();
     // prepare kernel
     let data = extract_data(x);
-    let gamma = get_nonan(params_problem, "gamma", 1.0);
-
-    let base = Box::new(rusvm::kernel::gaussian_from_vecs(
-        data.iter().map(|v| v.as_slice()).collect::<Vec<&[f64]>>(),
-        gamma,
-    ));
+    let base = create_kernel(&data, get_nonan(params_problem, "gamma", 1.0));
     let mut kernel = cache(base, cache_size);
     let result = rusvm::smo::solve(problem.as_ref(), kernel.as_mut(), &params_smo, None);
     let (result_sv, svs) = result.find_support(&data);
@@ -61,12 +56,7 @@ pub fn newton(
     let problem = prepare_problem(&y, params_problem).unwrap();
     // prepare kernel
     let data = extract_data(x);
-    let gamma = get_nonan(params_problem, "gamma", 1.0);
-
-    let base = Box::new(rusvm::kernel::gaussian_from_vecs(
-        data.iter().map(|v| v.as_slice()).collect::<Vec<&[f64]>>(),
-        gamma,
-    ));
+    let base = create_kernel(&data, get_nonan(params_problem, "gamma", 1.0));
     let mut kernel = cache(base, cache_size);
     let result = rusvm::newton::solve(problem.as_ref(), kernel.as_mut(), &params_newton, None);
     let (result_sv, svs) = result.find_support(&data);

@@ -1,4 +1,5 @@
 use js_sys::{Array, Object, Reflect};
+use rusvm::kernel::Kernel;
 use wasm_bindgen::prelude::*;
 
 use super::getters::*;
@@ -109,4 +110,11 @@ pub fn extract_data(x: &Array) -> Vec<Vec<f64>> {
         data.push(arr);
     }
     data
+}
+
+pub fn create_kernel<'a>(data: &'a Vec<Vec<f64>>, gamma: f64) -> Box<impl Kernel + 'a> {
+    Box::new(rusvm::kernel::gaussian_from_vecs(
+        data.iter().map(|v| v.as_slice()).collect::<Vec<&[f64]>>(),
+        gamma,
+    ))
 }
