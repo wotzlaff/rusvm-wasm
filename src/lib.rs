@@ -170,7 +170,7 @@ pub fn smo(
     let data = extract_data(x);
     let gamma = get_nonan(params_problem, "gamma", 1.0);
 
-    let mut base = Box::new(rusvm::kernel::gaussian_from_vecs(
+    let base = Box::new(rusvm::kernel::gaussian_from_vecs(
         data.iter().map(|v| v.as_slice()).collect::<Vec<&[f64]>>(),
         gamma,
     ));
@@ -197,15 +197,11 @@ pub fn newton(
     let data = extract_data(x);
     let gamma = get_nonan(params_problem, "gamma", 1.0);
 
-    let mut base = Box::new(rusvm::kernel::gaussian_from_vecs(
+    let base = Box::new(rusvm::kernel::gaussian_from_vecs(
         data.iter().map(|v| v.as_slice()).collect::<Vec<&[f64]>>(),
         gamma,
     ));
-    let mut kernel: Box<dyn Kernel> = if cache_size > 0 {
-        Box::new(rusvm::kernel::CachedKernel::from(base.as_mut(), cache_size))
-    } else {
-        base
-    };
+    let mut kernel = cache(base, cache_size);
     let result = rusvm::newton::solve(problem.as_ref(), kernel.as_mut(), &params_newton, None);
     let (result_sv, svs) = result.find_support(&data);
     serde_wasm_bindgen::to_value(&(result.opt_status, result_sv, svs))
