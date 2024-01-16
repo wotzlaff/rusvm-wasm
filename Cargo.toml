@@ -2,8 +2,10 @@
 name = "rusvm-wasm"
 version = "0.1.0"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+license = "AGPL-3.0-or-later"
+description = "Use rusvm to solve SVM training problems on wasm"
+repository = "https://github.com/wotzlaff/rusvm-wasm"
+keywords = ["smo", "svm", "machine-learning", "wasm"]
 
 [lib]
 crate-type = ["cdylib"]
