@@ -78,7 +78,8 @@
         let statusDiv = document.getElementById('status')
         statusDiv.innerHTML = [
           `<b>number of iterations:</b> ${optStatus.steps}`,
-          `<b>final violation:</b> ${optStatus.violation}`,
+          `<b>time:</b> ${optStatus.time} sec`,
+          `<b>final violation:</b> ${optStatus.violation.toExponential(3)}`,
           `<b>number of support vectors:</b> ${status.a.length}`
         ].join('<br />')
       })
