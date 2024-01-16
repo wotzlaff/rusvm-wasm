@@ -1,4 +1,4 @@
-use js_sys::{Array, Object, Reflect};
+use js_sys::{Object, Reflect};
 use rusvm::kernel::Kernel;
 use wasm_bindgen::prelude::*;
 
@@ -93,27 +93,8 @@ pub fn prepare_problem<'a>(
     }
 }
 
-pub fn extract_data(x: &Array) -> Vec<Vec<f64>> {
-    let mut data = Vec::new();
-    let mut nft = u32::MAX;
-    for i in 0..x.length() {
-        let xi: Array = x.get(i).into();
-        let nft_i = xi.length();
-        if nft == u32::MAX {
-            nft = nft_i;
-        }
-        assert!(nft_i == nft);
-        let mut arr = Vec::with_capacity(nft.try_into().unwrap());
-        for j in 0..xi.length() {
-            arr.push(xi.get(j).unchecked_into_f64());
-        }
-        data.push(arr);
-    }
-    data
-}
-
 pub fn create_kernel<'a>(data: &'a Vec<Vec<f64>>, gamma: f64) -> Box<impl Kernel + 'a> {
-    Box::new(rusvm::kernel::gaussian_from_vecs(
+    Box::new(rusvm::kernel::gaussian::from_vecs(
         data.iter().map(|v| v.as_slice()).collect::<Vec<&[f64]>>(),
         gamma,
     ))

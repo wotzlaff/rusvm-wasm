@@ -20,31 +20,35 @@
     <div id="status"></div>
 
     <script type="module">
-      import init, { smo, newton } from './pkg/rusvm_wasm.js'
+      import init, { smo, newton, predict } from './pkg/rusvm_wasm.js'
       init().then(() => {
         let { x, y } = generateData(25, '?')
 
         let lmbda = 1e-2
         let gamma = 100.0
-        let params = { lmbda, gamma }
-        let [optStatus, status, svs] = newton(
-          x,
-          y,
-          {
-            kind: 'regression',
-            gamma,
-            lmbda,
-            epsilon: 0.01,
-            smoothing: 0.005
-          },
-          {
-            // time_limit: 0.1,
-            tol: 1e-18,
-            verbose: 1
-          }
-        )
+        let params = {
+          kind: 'regression',
+          gamma,
+          lmbda,
+          epsilon: 0.01,
+          smoothing: 0.005
+        }
+        let [optStatus, status, svs] = newton(x, y, params, {
+          // time_limit: 0.1,
+          tol: 1e-18,
+          verbose: 1
+        })
 
         let xplot = linspace(-0.2, 1.2, 300)
+        // let yplot = predict(status, svs, params, xplot)
+        console.log(
+          predict(
+            status,
+            svs,
+            params,
+            xplot.map(xk => [xk])
+          )
+        )
         let yplot = xplot.map(xk => decisionFunction([xk], status, svs, params))
 
         let plot = document.getElementById('plot')
