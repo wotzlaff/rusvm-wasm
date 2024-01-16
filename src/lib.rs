@@ -97,6 +97,7 @@ pub fn newton(
     let base = create_kernel(&data, get_nonan(params_problem, "gamma", 1.0));
     let mut kernel = cache(base, cache_size);
     let result = rusvm::newton::solve(problem.as_ref(), kernel.as_mut(), &params_newton, None);
-    let (result_sv, svs) = result.find_support(&data);
-    serde_wasm_bindgen::to_value(&(result.opt_status, result_sv, svs))
+    let status = result.status;
+    let (result_sv, svs) = status.find_support(&data);
+    serde_wasm_bindgen::to_value(&(status.opt_status, result_sv, svs))
 }
