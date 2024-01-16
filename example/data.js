@@ -10,26 +10,8 @@ function generateData (n, seed) {
   return { x, y }
 }
 
-function kernel (x0, x1, gamma) {
-  let dsqr = 0.0
-  for (let i = 0; i < x0.length; ++i) {
-    let di = x0[i] - x1[i]
-    dsqr += di * di
-  }
-  return Math.exp(-gamma * dsqr)
-}
-
 function linspace (a, b, n) {
   return Array.from(Array(n).keys(), i => {
     return a + ((b - a) / (n - 1)) * i
   })
-}
-
-function decisionFunction (xk, status, svs, params) {
-  const { lmbda, gamma } = params
-  let d = 0.0
-  for (let i = 0; i < svs.length; ++i) {
-    d += status.a[i] * kernel(svs[i], xk, gamma)
-  }
-  return d / lmbda + status.b
 }

@@ -40,16 +40,12 @@
         })
 
         let xplot = linspace(-0.2, 1.2, 300)
-        // let yplot = predict(status, svs, params, xplot)
-        console.log(
-          predict(
-            status,
-            svs,
-            params,
-            xplot.map(xk => [xk])
-          )
+        let yplot = predict(
+          status,
+          svs,
+          params,
+          xplot.map(xk => [xk])
         )
-        let yplot = xplot.map(xk => decisionFunction([xk], status, svs, params))
 
         let plot = document.getElementById('plot')
         Plotly.newPlot(
