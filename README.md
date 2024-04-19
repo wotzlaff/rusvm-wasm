@@ -7,3 +7,5 @@ cd example
 ln -s ../pkg .
 python3 -m http.server
 ```
+
+The example is also available [online](https://rusvm-wasm-example.surge.sh/).
